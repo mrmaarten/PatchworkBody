@@ -6,12 +6,12 @@
 
 // FIX
 // changing the speed algorithm: smoothing/ ramp up down to next speed
-// ADD 2 FILMS
+
 
 import processing.video.*;
 Movie video1;
 
-String DriveDev = "D:\\films\\1280-F1\\";
+String DriveDev = "H:\\films\\1280-F1\\";
 String DriveLocal = "C:\\Users\\maarten\\Desktop\\films\\1280-F1\\";
 
 // dev or on location
@@ -23,7 +23,12 @@ int state = 1;
 int timerBegin = 1;
 int timeLength = 1000*60*60*13; //millisec * 1000 to get seconds *60 = minutes *60 = hours * 4 = hours
 int timeStamp1 = 0;
-float[] jumppoint = {4.0, 36.68, 40.72, 73.36, 77.40, 110.08, 114.12, 154.2, 158.24, 198.32, 202.36, 242.64, 246.68, 293.16, 297.20, 343.68, 347.72, 394.2, 398.24, 507.28};
+//values with NO BLOOD
+float[] jumppoint = {4.0, 36.68, 40.72, 73.36, 77.40, 110.08, 114.12, 154.2, 158.24, 198.32, 202.36, 242.64, 246.68, 293.16, 297.20, 343.68, 347.72, 394.2, 398.24, 482.67};
+// values with blood
+/*float[] jumppoint = {4.0, 36.68, 40.72, 73.36, 77.40, 110.08, 114.12, 154.2, 158.24, 198.32, 202.36, 242.64, 246.68, 293.16, 297.20, 343.68, 347.72, 394.2, 398.24, 507.28};
+*/
+
 float videoSpeed = 1.0;
 int PlayAll = 0;
 float switchframe = 0;
@@ -39,7 +44,7 @@ int timeLengthSpeedChange = 1000;
 //String sketchFile = sketchFile("PatchworkBody_Play_Windows.pde");
 //findPathSketch = sketchPath("data/target.app"); 
 
-String[] Videos = {"01-egg-1280x720-all-segments-F1.mp4", "02-garage-1280x720-F1.mp4",  "03-street-1280x720-F1.mp4", "04-heels-1280x720-F1.mp4", "05-hand-1280x720-F1.mp4"};
+String[] Videos = {"01-egg-1280x720-NO-BLOOD-F1.mp4", "02-garage-1280x720-F1.mp4",  "03-street-1280x720-F1.mp4", "04-heels-1280x720-F1.mp4", "05-hand-1280x720-F1.mp4"};
 
 /*
 String[] Videos = {"01egg1920x1080_F1.mp4", "02Evelyn-garage-1920x1080-F1mp4.mp4",  "03Santy-Street-1920x1080-F1.mp4", "04heels1920x1080_F1_8-10.mp4", "05hand1920x1080_F72.mp4"};
