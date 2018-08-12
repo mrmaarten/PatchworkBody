@@ -15,8 +15,17 @@
 import processing.video.*;
 Movie video1;
 
-String DriveDev = "H:\\films\\1280-F1\\";
+/*String DriveDev = "H:\\films\\1280-F1\\";
 String DriveLocal = "C:\\Users\\maarten\\Desktop\\films\\1280-F1\\";
+*/
+
+String SketchPath;
+char DevDrive_temp;
+String DevDrive;
+String DevPath;
+String[] SplitPath;
+String LocalPath = "";
+String FilmPath = "\\films\\1280-F1\\";
 
 // dev or on location
 int Dev = 1;
@@ -73,6 +82,8 @@ void setup() {
   frameRate(50);
   noSmooth();
   
+  
+  
   //print (path);
   //print (sketchFile);
   //video1 = new Movie(this, "/media/pi/USB/egg-all-h264.mp4", GLVideo.MUTE);
@@ -83,15 +94,54 @@ void setup() {
     surface.setLocation(100,80);
     //surface.setTitle("Patchwork Body"); 
     
+    //get the path of the current sketch
+    SketchPath = sketchPath("");
+    
+     //get the first character of the drive path = the windows drive
+    char DevDrive_temp = SketchPath.charAt(0);
+    //cast the drive path as a String
+    String DevDrive = str(DevDrive_temp);
+    DevDrive = DevDrive + ":";
+    
+    //complete the path to the films on the usb drive
+    DevPath = DevDrive + FilmPath;
+    
+    
     for (int i=0;i<Videos.length;i++) {
-    Videos[i] = DriveDev + Videos[i];
+    Videos[i] = DevPath + Videos[i];
     } 
+    
+    
+    
   } else {
+  /*
+  * PARSE DESKTOP FOLDER
+  */
+  
+  String[] ListPath = split(SketchPath, '\\');
+  //println(ListPath[1]);
+  for (int i = 0; i < ListPath.length; i++) {
+    //println(ListPath[i]);
+    if (i == 0) {
+      LocalPath = LocalPath + ListPath[i];
+    } else {
+    LocalPath = LocalPath +"\\"+ListPath[i];
+    if (ListPath[i].equals("Desktop") == true) {
+      LocalPath = LocalPath + FilmPath;
+      //println (LocalPath);
+      break;
+    }//if
+    }// else
+  }//for
+  
+  
       for (int i=0;i<Videos.length;i++) {
-        Videos[i] = DriveLocal + Videos[i];
+        Videos[i] = LocalPath + Videos[i];
       }
     noCursor();
     }
+    
+    
   //print (file1);
   state = int(random(1,3));
   //println("firstate: "+state);
