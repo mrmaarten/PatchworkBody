@@ -7,6 +7,10 @@
 // FIX
 // changing the speed algorithm: smoothing/ ramp up down to next speed
 
+//ADD
+// - get path of desktop (get username) to set folder auto
+// - read files from folder and parse them into array
+
 
 import processing.video.*;
 Movie video1;
@@ -48,7 +52,6 @@ String[] Videos = {"01-egg-1280x720-NO-BLOOD-F1.mp4", "02-garage-1280x720-F1.mp4
 
 /*
 String[] Videos = {"01egg1920x1080_F1.mp4", "02Evelyn-garage-1920x1080-F1mp4.mp4",  "03Santy-Street-1920x1080-F1.mp4", "04heels1920x1080_F1_8-10.mp4", "05hand1920x1080_F72.mp4"};
-
 
 String file2 =  "02Evelyn-garage-1920x1080-F1mp4.mp4";
 String file3 =  "03Santy-Street-1920x1080-F1.mp4";
