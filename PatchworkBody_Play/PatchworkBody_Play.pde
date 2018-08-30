@@ -8,21 +8,20 @@
 // changing the speed algorithm: smoothing/ ramp up down to next speed
 
 //ADD
-// - read files from folder and parse them into array
 
 import processing.video.*;
-Movie video1;
 
+// FULLSCREEN OR NOT, finding location of movies is automatic
+int fullscreen = 0;
+
+Movie video1;
 String SketchPath;
 char DevDrive_temp;
 String DevDrive;
-String DevPath;
+String DevPath = "";
 String[] SplitPath;
 String LocalPath = "";
-String FilmPath = "\\films\\1280-F1\\";
-
-// dev or on location
-int Dev = 0;
+String FilmPath = "\\films\\1280-F1";
 
 float vd1; //video duration
 float vt1; //video time
@@ -30,6 +29,7 @@ int state = 1;
 int timerBegin = 1;
 int timeLength = 1000*60*60*13; //millisec * 1000 to get seconds *60 = minutes *60 = hours * 4 = hours
 int timeStamp1 = 0;
+
 //values with NO BLOOD
 float[] jumppoint = {4.0, 36.68, 40.72, 73.36, 77.40, 110.08, 114.12, 154.2, 158.24, 198.32, 202.36, 242.64, 246.68, 293.16, 297.20, 343.68, 347.72, 394.2, 398.24, 482.67};
 // values with blood
@@ -42,18 +42,15 @@ float switchframe = 0;
 int debug = 1;
 float counterTresh = 25.0;
 int jump;
-int fullscreen = 0;
-String path = sketchPath("");
+
 int speedTimer = 1;
 int timeSpeedStamp = 1000;
 int timeLengthSpeedChange = 1000;
 int film = 1;
 int FirstPlay = 1;
 
-//String sketchFile = sketchFile("PatchworkBody_Play_Windows.pde");
-//findPathSketch = sketchPath("data/target.app"); 
-
-String[] Videos = {"01-egg-1280x720-NO-BLOOD-F1.mp4", "02-garage-1280x720-F1.mp4",  "03-street-1280x720-F1.mp4", "04-heels-1280x720-F1.mp4", "05-hand-1280x720-F1.mp4"};
+String[] Videos = {};
+String[] VideosOrdered = {"01-egg-1280x720-NO-BLOOD-F1.mp4", "02-garage-1280x720-F1.mp4",  "03-street-1280x720-F1.mp4", "04-heels-1280x720-F1.mp4", "05-hand-1280x720-F1.mp4"};;
 
 void setup() {
   fullScreen(2);
@@ -68,71 +65,167 @@ void setup() {
   
   //get the path of the current sketch
   SketchPath = sketchPath("");
- 
+  println("SketchPath: "+ SketchPath);
+  println();
   //video1 = new Movie(this, "/media/pi/USB/egg-all-h264.mp4", GLVideo.MUTE);
 
-// DEV mode = from usb drive, small window
-  if (Dev == 1) {
-    surface.setSize(1024, 576);
-    surface.setLocation(100,80);
-    
+/////////////////////////////////////////
+/// Check if sketch is on C drive or not
+
     //get the first character of the drive path = the windows drive
     char DevDrive_temp = SketchPath.charAt(0);
     //cast the drive path as a String
     String DevDrive = str(DevDrive_temp);
+    //check if sketch is on c: drive
+    if (DevDrive.equals("C") == true || DevDrive.equals("c") == true) {
+      //println("C drive!");
+      
+      // get path, parse Desktop, add films
+  
+  ///////////////////////////////////////////////
+  // PARSE DESKTOP FOLDER for local use
+
+  String[] ListPath = split(SketchPath, '\\');
+  //printArray (ListPath);
+  for (int i = 0; i < ListPath.length; i++) {
+    //println(ListPath[i]);
+    if (i == 0) {
+      DevPath = DevPath + ListPath[i];
+      //println (DevPath);
+    } else {
+    DevPath = DevPath +"\\"+ListPath[i];
+    //println (DevPath);
+    if (ListPath[i].equals("Desktop") == true) {
+      DevPath = DevPath + FilmPath;
+      //println("breakpoint");
+      //println (DevPath);
+      break;
+      }//if
+    }// else
+  }//for
+  
+  /// end parse desktop folder
+  //////////////////////////////////////////////
+  
+    Videos = listFileNames(DevPath);
+    DevPath = DevPath + "\\";
+
+    
+    for (int i=0;i<Videos.length;i++) {
+    Videos[i] = DevPath + Videos[i];
+    } 
+
+    } else { //////// if not on C drive
+      //println("No C drive");
+    
     // add : to the drive letter
     DevDrive = DevDrive + ":";
     
     //complete the path to the films on the usb drive
     DevPath = DevDrive + FilmPath;
-    
-    for (int i=0;i<Videos.length;i++) {
-    Videos[i] = DevPath + Videos[i];
-    } 
-      
-  } else {
-  /*
-  * PARSE DESKTOP FOLDER for local use
-  */
-  
-  String[] ListPath = split(SketchPath, '\\');
-  //println(ListPath[1]);
-  for (int i = 0; i < ListPath.length; i++) {
-    //println(ListPath[i]);
-    if (i == 0) {
-      LocalPath = LocalPath + ListPath[i];
-    } else {
-    LocalPath = LocalPath +"\\"+ListPath[i];
-    if (ListPath[i].equals("Desktop") == true) {
-      LocalPath = LocalPath + FilmPath;
-      //println (LocalPath);
-      break;
-    }//if
-    }// else
-  }//for
-  
-        //parse all videos with local path
-      for (int i=0;i<Videos.length;i++) {
-        Videos[i] = LocalPath + Videos[i];
-      }
-    noCursor();
-    } //end dev == 0
-    
 
+    Videos = listFileNames(DevPath);
+    
+    DevPath = DevPath + "\\";
+    println("Film path: ");
+    println(DevPath);
+    
+    arrayCopy(Videos, VideosOrdered);
+
+    ///// put the videos in the right order
+    //for (int j=0; j<Videos.length; j++){
+    //  char DevPath_temp = Videos[j].charAt(1);
+    //  //cast the drive path as a String
+    //  String MovNumber = str(DevPath_temp);
+    //  if (MovNumber.equals("1") == true) {
+    //   VideosOrdered[0] = Videos[j]; 
+    //  }
+    //  if (MovNumber.equals("2") == true) {
+    //     VideosOrdered[1] = Videos[j]; 
+    //    }
+    //  if (MovNumber.equals("3") == true) {
+    //   VideosOrdered[2] = Videos[j]; 
+    //  }
+    //  if (MovNumber.equals("4") == true) {
+    //     VideosOrdered[3] = Videos[j]; 
+    //    }
+    //  if (MovNumber.equals("5") == true) {
+    //   VideosOrdered[4] = Videos[j]; 
+    //    }
+    //  }
+
+    //arrayCopy(VideosOrdered, Videos);
+      
+      for (int i=0;i<Videos.length;i++) {
+      Videos[i] = DevPath + Videos[i];
+      }
+    /// add drive name in front of video names
+      //printArray(Videos);
+    } ///else (not c drive)
+  
+  
+//// C drive check  
+///////////////////////////////////////////////  
+
+
+// full screen or not 
+  if (fullscreen == 0) {
+    surface.setSize(1024, 576);
+    surface.setLocation(100,80);
+    
+  } else {
+   noCursor(); 
+  }
+    
   state = int(random(1,3));
   //println("firstate: "+state);
   film = int(random(1, 5));
-
   debugger();
   debug = 1;
-  delay(500);
+  delay(150);
   filmSwitch();
   debug = 0;
   counterTresh = vt1 + random(4.0, 20.0);
+  
 } //setup
 
 void movieEvent(Movie m) {
   m.read();
+}
+
+String[] listFileNames(String dir) {
+  File file = new File(dir);
+    String Videos[] = file.list();
+    //printArray (Videos);
+    //println();
+    
+    /// put the videos in the right order
+    for (int j=0; j<Videos.length; j++){
+      char DevPath_temp = Videos[j].charAt(1);
+      //cast the drive path as a String
+      String MovNumber = str(DevPath_temp);
+      if (MovNumber.equals("1") == true) {
+       VideosOrdered[0] = Videos[j]; 
+      }
+      if (MovNumber.equals("2") == true) {
+         VideosOrdered[1] = Videos[j]; 
+        }
+      if (MovNumber.equals("3") == true) {
+       VideosOrdered[2] = Videos[j]; 
+      }
+      if (MovNumber.equals("4") == true) {
+         VideosOrdered[3] = Videos[j]; 
+        }
+      if (MovNumber.equals("5") == true) {
+       VideosOrdered[4] = Videos[j]; 
+        }
+      }
+      arrayCopy(VideosOrdered, Videos);
+      println("Ordered video list from folder: ");
+      printArray(Videos);
+      println();
+      
+    return Videos; 
 }
 
 void draw() {
