@@ -22,11 +22,14 @@ if %weekday%==%weekdaycheck% (
 	echo going to kill java
 	echo and exit this batch file
 	Powershell.exe -executionpolicy remotesigned -File C:\Users\patchwork\Desktop\stop-patchwork.ps1
-	start call "check-weekday2.bat"
-	goto :EOF
+	start call check-weekday1.bat
+	goto :exit
 )
 
 echo not %weekdaycheck%
 echo try again in %timeoutsec% seconds
 timeout %timeoutsec%
 goto :check
+
+:exit
+exit 0
